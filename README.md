@@ -32,6 +32,8 @@ A curated collection of developer tools and plugins for [Claude Code](https://cl
   - Module development skill
   - Security review skill
   - DDEV operations skill
+  - Git worktree workflow skill
+  - OWASP ASVS security verification skill
 
 ## Installation
 
@@ -69,11 +71,59 @@ Check that the plugin is installed:
 /plugin list
 ```
 
+## Updating Plugins
+
+Pushing new commits to this repository does **not** automatically update an already-installed plugin. Claude Code keeps a local cache of both the marketplace catalog and the installed plugin (pinned to a specific git commit), so you have to refresh them manually.
+
+### Step 1: Refresh the Marketplace Catalog
+
+Fetch the latest catalog from this repository:
+
+```
+/plugin marketplace update dev-tools
+```
+
+The format is: `/plugin marketplace update <marketplace-name>`. Use `--all` to refresh every marketplace at once.
+
+### Step 2: Update the Installed Plugin
+
+Refreshing the catalog does not change the installed copy on its own. Reinstall the plugin to pull the latest version:
+
+```
+/plugin uninstall drupal-dev-tools@dev-tools
+/plugin install drupal-dev-tools@dev-tools
+```
+
+### Step 3: Reload Plugins
+
+Activate the changes in your current session (or restart Claude Code):
+
+```
+/reload-plugins
+```
+
+### Optional: Enable Auto-Update
+
+To have the marketplace pull the latest version automatically on startup:
+
+1. Run `/plugin`
+2. Open the **Marketplaces** tab
+3. Select your marketplace
+4. Toggle **Enable auto-update**
+
+### Tip: Local Development
+
+If you are developing this plugin locally, add the marketplace from your local working tree instead of GitHub. This avoids the push/fetch cycle — you only need `/reload-plugins` to test edits:
+
+```
+/plugin marketplace add /path/to/claude-plugins
+```
+
 ## Using the Plugins
 
 ### Drupal Dev Tools
 
-#### Using the `/drupal-dev-tools:drupal-ddev` Command
+#### Using the `/drupal-dev-tools:drupal` Command
 
 Once installed, you can run comprehensive Drupal code audits:
 
@@ -120,7 +170,11 @@ claude-plugins/
         │   └── SKILL.md
         ├── drupal-security-review/
         │   └── SKILL.md
-        └── drupal-ddev-operations/
+        ├── drupal-ddev-operations/
+        │   └── SKILL.md
+        ├── git-worktree/
+        │   └── SKILL.md
+        └── owasp-asvs/
             └── SKILL.md
 
 ```
@@ -166,7 +220,7 @@ If you encounter any issues or have questions:
 ## Changelog
 
 ### Version 2.2.0 (Latest)
-- Added Drupal-focused reusable skills bundle (`*.SKILL.md`)
+- Added Drupal-focused reusable skills bundle (`skills/*/SKILL.md`)
 - Updated plugin metadata and marketplace entry
 - Kept existing audit command and DDEV agent workflows
 

@@ -55,29 +55,31 @@ Provide a structured analysis with the following sections:
 
 **Reference Examples of Best Practice Code:**
 
-```php
-// Safe escaping
+```javascript
+// Safe client-side escaping
 var rawInputText = $('#form-input').text();
 var escapedInputText = Drupal.checkPlain(rawInputText);
+```
 
+```php
 // Safe query with parameter binding
-\Database::getConnection()->query(
+\Drupal::database()->query(
   'SELECT foo FROM {table} t WHERE t.name = :name',
-  [':name' => $_GET['user']]
+  [':name' => $name]
 );
 
-// Safe query using Drupal’s query builder
-$users = ['joe', 'poe', $_GET['user']];
-$result = \Database::getConnection()
+// Safe query using Drupal's query builder
+$users = ['joe', 'poe', $name];
+$result = \Drupal::database()
   ->select('foo', 'f')
   ->fields('f', ['bar'])
   ->condition('f.bar', $users)
   ->execute();
 
 // Proper LIKE condition with escapeLike()
-$conn = \Database::getConnection();
+$conn = \Drupal::database();
 $conn->select('table', 't')
-  ->condition('t.field', '%_' . $conn->escapeLike($user), 'LIKE')
+  ->condition('t.field', '%_' . $conn->escapeLike($name), 'LIKE')
   ->execute();
 
 // Safe CSS class sanitization

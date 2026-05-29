@@ -1,3 +1,8 @@
+---
+name: drupal-ddev
+description: Use this agent for managing DDEV-based Drupal 11 projects — installing/updating modules, running Drush commands, managing configuration, database operations, cache management, and Composer workflows.
+---
+
 # Drupal 11 DDEV Agent
 
 ## Role
