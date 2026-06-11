@@ -1,6 +1,6 @@
 ---
 name: owasp-asvs
-description: OWASP ASVS v5.0 security verification skill. Use when performing security code reviews or implementing security requirements.
+description: OWASP ASVS v5.0 security verification skill with Drupal 11 mappings. Use when performing security code reviews, implementing security requirements, or verifying security compliance in Drupal projects.
 ---
 
 # ASVS Security Verification Skill

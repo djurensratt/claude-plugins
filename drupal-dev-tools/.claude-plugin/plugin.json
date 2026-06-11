@@ -1,7 +1,7 @@
 {
   "name": "drupal-dev-tools",
-  "description": "Comprehensive Drupal 11 toolkit with audit command, DDEV agent, and skills bundle",
-  "version": "2.2.0",
+  "description": "Drupal 11 toolkit — audit command and skills for module development and security review",
+  "version": "4.0.0",
   "author": {
     "name": "Ludek Kvapil - siva01"
   }

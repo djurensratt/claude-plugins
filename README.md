@@ -1,6 +1,6 @@
 # Claude Code Plugin Marketplace
 
-A curated collection of developer tools and plugins for [Claude Code](https://claude.com/claude-code), designed to enhance your development workflow with specialized agents and commands.
+A curated collection of [Claude Code](https://claude.com/claude-code) plugins for **Drupal development, security, and deployment**. Each plugin covers one topic — Drupal itself, DDEV, Docker, CI/CD, git workflows, and security verification — so you install only what you need.
 
 ## Repository
 
@@ -8,32 +8,46 @@ A curated collection of developer tools and plugins for [Claude Code](https://cl
 
 ## Available Plugins
 
-### Drupal Dev Tools
+| Plugin | Version | Contents |
+|---|---|---|
+| [drupal-dev-tools](drupal-dev-tools/) | 4.0.0 | `/drupal-dev-tools:drupal` audit command, skills: module development, security review |
+| [ddev-tools](ddev-tools/) | 1.0.0 | `drupal-ddev` agent, skill: DDEV operations for Drupal projects |
+| [git-tools](git-tools/) | 1.0.0 | Skill: git worktrees for parallel, conflict-free work |
+| [security-tools](security-tools/) | 1.0.0 | Skill: OWASP ASVS v5.0 checklist mapped to Drupal 11 APIs |
+| [docker-tools](docker-tools/) | 1.0.0 | Skills: Docker Compose for Drupal stacks, Docker Model Runner for local AI models |
+| [cicd-tools](cicd-tools/) | 1.0.0 | Skills: GitLab CI and GitHub Actions pipelines for Drupal projects |
 
-**Version:** 2.2.0
-**Description:** Comprehensive Drupal 11 development toolkit with DDEV integration
+### drupal-dev-tools
 
-#### Features:
-- **Slash Command: `/drupal-dev-tools:drupal`** - Performs comprehensive Drupal 11 code audit and security analysis
-  - Verifies Drupal 11 coding standards compliance
-  - Checks for security vulnerabilities (SQL injection, XSS, unsafe input handling)
-  - Reviews code quality and design patterns (SOLID, DRY principles)
-  - Identifies code duplication and deprecated APIs
-  - Provides actionable recommendations with Drupal documentation references
+Comprehensive Drupal 11 toolkit:
 
-- **Agent: `drupal-ddev`** - Specialized agent for managing DDEV-based Drupal 11 projects
-  - Module management (install, update, remove)
-  - Configuration management (export, import, status)
-  - Database operations (import, export, updates)
-  - Cache management and performance optimization
-  - Development workflows and best practices
+- **Slash command `/drupal-dev-tools:drupal`** — full code audit of custom themes and modules: Drupal 11 standards, security (SQL injection, XSS, unsafe input), SOLID/DRY design review, duplication, refactoring recommendations.
+- **Skills** — `drupal-module-development`, `drupal-security-review`.
 
-- **Skills bundle (`drupal-dev-tools/skills/*/SKILL.md`)** - Reusable Drupal 11 workflows
-  - Module development skill
-  - Security review skill
-  - DDEV operations skill
-  - Git worktree workflow skill
-  - OWASP ASVS security verification skill
+### ddev-tools
+
+DDEV is a multiplatform local development environment (built on Docker), so it has its own plugin:
+
+- **Agent `drupal-ddev`** — manages DDEV-based Drupal 11 projects: modules, configuration, database operations, caches, Composer workflows.
+- **`drupal-ddev-operations`** — safe operational workflows for Drupal in DDEV: backup-first updates, database/config import-export, troubleshooting.
+
+### git-tools
+
+- **`git-worktree`** — check out multiple branches into separate directories so parallel tasks (or parallel Claude sessions) never conflict. Covers create/list/remove/move/repair, agent workflow, and safety rules.
+
+### security-tools
+
+- **`owasp-asvs`** — OWASP ASVS v5.0 verification checklist (V1–V14) with every requirement mapped to Drupal 11 APIs (`Xss::filter()`, Query Builder, Flood control, Key module…), critical security patterns in PHP, red-flags table, and recommended Drupal security modules.
+
+### docker-tools
+
+- **`docker-compose`** — compose.yaml authoring and operations with a Drupal stack (php-fpm, nginx, MariaDB, Redis) as the working example: healthchecks, depends_on conditions, dev/prod override files, profiles, troubleshooting.
+- **`docker-model`** — Docker Model Runner: pull/run local AI models, OpenAI-compatible endpoints, the Compose `models:` element, and using it as a local backend for the Drupal AI module.
+
+### cicd-tools
+
+- **`gitlab-ci`** — `.gitlab-ci.yml` authoring for Drupal: composer caching, phpcs/phpstan/phpunit jobs with a MariaDB service, `rules:`, environments, and drush-based deployment.
+- **`github-actions`** — workflows for Drupal: least-privilege permissions, concurrency, matrix PHP builds, database services, reusable workflows, and SSH/drush deployment.
 
 ## Installation
 
@@ -53,19 +67,22 @@ View all plugins available in the marketplace:
 /plugin marketplace list
 ```
 
-### Step 3: Install a Plugin
+### Step 3: Install Plugins
 
-Install the Drupal Dev Tools plugin:
+Install any plugin with `/plugin install <plugin-name>@<marketplace-name>`:
 
 ```
 /plugin install drupal-dev-tools@dev-tools
+/plugin install ddev-tools@dev-tools
+/plugin install git-tools@dev-tools
+/plugin install security-tools@dev-tools
+/plugin install docker-tools@dev-tools
+/plugin install cicd-tools@dev-tools
 ```
-
-The format is: `/plugin install <plugin-name>@<marketplace-name>`
 
 ### Step 4: Verify Installation
 
-Check that the plugin is installed:
+Check that the plugins are installed:
 
 ```
 /plugin list
@@ -119,36 +136,41 @@ If you are developing this plugin locally, add the marketplace from your local w
 /plugin marketplace add /path/to/claude-plugins
 ```
 
-## Using the Plugins
+## Upgrading from 1.0 to 2.0
 
-### Drupal Dev Tools
+Version 2.0 (git tag `2.0`) restructures the marketplace from a single plugin into six topic-based plugins. The `drupal-dev-tools` plugin no longer contains the multiplatform tooling — it moved to dedicated plugins:
 
-#### Using the `/drupal-dev-tools:drupal` Command
+| Item | 1.0 location | 2.0 location |
+|---|---|---|
+| git-worktree skill | `drupal-dev-tools:git-worktree` | `git-tools:git-worktree` |
+| owasp-asvs skill | `drupal-dev-tools:owasp-asvs` | `security-tools:owasp-asvs` |
+| drupal-ddev agent | `drupal-dev-tools` | `ddev-tools` |
+| drupal-ddev-operations skill | `drupal-dev-tools:drupal-ddev-operations` | `ddev-tools:drupal-ddev-operations` |
 
-Once installed, you can run comprehensive Drupal code audits:
+Version 2.0 also adds two brand-new plugins: `docker-tools` (Docker Compose, Docker Model Runner) and `cicd-tools` (GitLab CI, GitHub Actions).
+
+### Upgrade steps
+
+Run these commands in Claude Code:
 
 ```
-/drupal-dev-tools:drupal
+/plugin marketplace update dev-tools
+/plugin uninstall drupal-dev-tools@dev-tools
+/plugin install drupal-dev-tools@dev-tools
+/plugin install ddev-tools@dev-tools
+/plugin install git-tools@dev-tools
+/plugin install security-tools@dev-tools
+/plugin install docker-tools@dev-tools
+/plugin install cicd-tools@dev-tools
+/reload-plugins
 ```
 
-This will analyze your Drupal project and provide a structured report covering:
-- Drupal 11 best practices compliance
-- Security vulnerabilities
-- Code quality and design issues
-- Code duplication
-- Refactoring recommendations
+Notes:
 
-#### Using the `drupal-ddev` Agent
-
-The drupal-ddev agent is automatically available when working with DDEV-based Drupal projects. Simply interact with Claude Code naturally, and it will use the agent when appropriate for tasks like:
-
-- "Install the webform module"
-- "Export the current configuration"
-- "Clear all caches"
-- "Create a backup of the database"
-- "Update Drupal core"
-
-The agent knows common DDEV and Drush commands and follows Drupal best practices.
+- Reinstalling `drupal-dev-tools` is **required** — it removes the relocated agent and skills from the old installed copy.
+- Install `ddev-tools`, `git-tools`, and `security-tools` to keep the agent and skills you used in 1.0.
+- `docker-tools` and `cicd-tools` are new in 2.0 — install only if you need them.
+- If you pinned the marketplace to a local directory, replace step 1 with re-adding the marketplace from the updated checkout.
 
 ## Plugin Structure
 
@@ -157,26 +179,33 @@ This repository follows the Claude Code plugin marketplace structure:
 ```
 claude-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json      # Marketplace definition
-└── drupal-dev-tools/         # Plugin directory
-    ├── .claude-plugin/
-    │   └── plugin.json       # Plugin metadata
-    ├── commands/
-    │   └── drupal.md         # Slash command definition
-    ├── agents/
-    │   └── drupal-ddev.md    # Agent definition
+│   └── marketplace.json          # Marketplace definition (all plugins)
+├── drupal-dev-tools/
+│   ├── .claude-plugin/plugin.json
+│   ├── commands/drupal.md
+│   └── skills/
+│       ├── drupal-module-development/SKILL.md
+│       └── drupal-security-review/SKILL.md
+├── ddev-tools/
+│   ├── .claude-plugin/plugin.json
+│   ├── agents/drupal-ddev.md
+│   └── skills/drupal-ddev-operations/SKILL.md
+├── git-tools/
+│   ├── .claude-plugin/plugin.json
+│   └── skills/git-worktree/SKILL.md
+├── security-tools/
+│   ├── .claude-plugin/plugin.json
+│   └── skills/owasp-asvs/SKILL.md
+├── docker-tools/
+│   ├── .claude-plugin/plugin.json
+│   └── skills/
+│       ├── docker-compose/SKILL.md
+│       └── docker-model/SKILL.md
+└── cicd-tools/
+    ├── .claude-plugin/plugin.json
     └── skills/
-        ├── drupal-module-development/
-        │   └── SKILL.md
-        ├── drupal-security-review/
-        │   └── SKILL.md
-        ├── drupal-ddev-operations/
-        │   └── SKILL.md
-        ├── git-worktree/
-        │   └── SKILL.md
-        └── owasp-asvs/
-            └── SKILL.md
-
+        ├── gitlab-ci/SKILL.md
+        └── github-actions/SKILL.md
 ```
 
 ## Contributing
@@ -188,6 +217,7 @@ Contributions are welcome! To add a new plugin:
    - `.claude-plugin/plugin.json` - Plugin metadata
    - `commands/` - Slash command definitions (optional)
    - `agents/` - Agent definitions (optional)
+   - `skills/<skill-name>/SKILL.md` - Skill definitions (optional)
 3. Update `.claude-plugin/marketplace.json` to include your plugin
 4. Submit a pull request
 
@@ -196,7 +226,8 @@ Contributions are welcome! To add a new plugin:
 Each plugin must have:
 - A unique name (kebab-case)
 - A `.claude-plugin/plugin.json` file with metadata
-- At least one command or agent
+- At least one command, agent, or skill
+- A topic that fits the marketplace scope: Drupal development, security, or deployment
 - Clear documentation
 
 ## Documentation
@@ -208,8 +239,7 @@ For more information about Claude Code plugins:
 
 ## License
 
-This project is open source. Please check individual plugin directories for specific licenses.
-
+MIT — see [LICENSE](LICENSE).
 
 ## Support
 
@@ -219,16 +249,18 @@ If you encounter any issues or have questions:
 
 ## Changelog
 
-### Version 2.2.0 (Latest)
-- Added Drupal-focused reusable skills bundle (`skills/*/SKILL.md`)
-- Updated plugin metadata and marketplace entry
-- Kept existing audit command and DDEV agent workflows
+### 2.0 (Latest)
+- **Restructured into topic-based plugins:** `git-worktree` moved to new `git-tools` plugin, `owasp-asvs` moved to new `security-tools` plugin, `drupal-ddev` agent + `drupal-ddev-operations` skill moved to new `ddev-tools` plugin (DDEV is multiplatform, not Drupal-specific)
+- **New `docker-tools` plugin:** Docker Compose (Drupal stack) and Docker Model Runner skills
+- **New `cicd-tools` plugin:** GitLab CI and GitHub Actions skills for Drupal pipelines
+- `drupal-dev-tools` plugin bumped to 4.0.0 (breaking: agent and skills moved out — plugin versions are independent of repo tags)
+- Marketplace metadata refocused on Drupal development, security, and deployment
+- See [Upgrading from 1.0 to 2.0](#upgrading-from-10-to-20)
 
-### Version 2.1.0
-- Enhanced Drupal 11 development tools
-- Added comprehensive code audit command
-- Improved DDEV agent with detailed workflows
-- Updated security analysis patterns
+### 1.0 — original single-plugin marketplace
+- Single `drupal-dev-tools` plugin (up to 2.2.0) containing the audit command, DDEV agent, and all skills including `git-worktree` and `owasp-asvs`
+- Plugin 2.2.0: added the Drupal-focused reusable skills bundle (`skills/*/SKILL.md`)
+- Plugin 2.1.0: comprehensive code audit command, improved DDEV agent workflows, updated security analysis patterns
 
 ---
 

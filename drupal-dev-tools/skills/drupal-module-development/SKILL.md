@@ -28,7 +28,9 @@ Use this skill when creating or extending custom Drupal 11 modules with modern a
 
 ## Quick command checklist
 ```bash
-ddev drush en <module_name> -y
-ddev drush cr
-ddev drush config:export -y
+drush en <module_name> -y
+drush cr
+drush config:export -y
 ```
+
+In a containerized environment, prefix with your runner (e.g. `ddev drush …` — see the `ddev-tools` plugin).

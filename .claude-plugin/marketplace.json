@@ -5,26 +5,72 @@
     "email": "kvapilludek@gmail.com"
   },
   "metadata": {
-    "description": "A collection of developer tools for various programming languages and frameworks.",
+    "description": "Developer tools for Drupal development, security, and deployment — Drupal, Docker, CI/CD, git, and security workflows.",
     "categories": [
       "Development",
       "Productivity"
     ],
     "tags": [
-      "dev-tools",
-      "programming",
-      "frameworks",
-      "languages"
+      "drupal",
+      "docker",
+      "ci-cd",
+      "git",
+      "security"
     ]
   },
   "plugins": [
     {
       "name": "drupal-dev-tools",
       "source": "./drupal-dev-tools",
-      "description": "Drupal dev tools with commands, agent, and reusable skills",
-      "version": "2.2.0",
+      "description": "Drupal 11 toolkit — audit command and skills for module development and security review",
+      "version": "4.0.0",
       "author": {
-        "name": "DevTools Team"
+        "name": "Ludek Kvapil - siva01"
+      }
+    },
+    {
+      "name": "ddev-tools",
+      "source": "./ddev-tools",
+      "description": "DDEV local environment skills — drupal-ddev agent and operational workflows for Drupal 11 projects in DDEV",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ludek Kvapil - siva01"
+      }
+    },
+    {
+      "name": "git-tools",
+      "source": "./git-tools",
+      "description": "Git workflow skills — worktrees for parallel, conflict-free work on multiple branches",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ludek Kvapil - siva01"
+      }
+    },
+    {
+      "name": "security-tools",
+      "source": "./security-tools",
+      "description": "Security verification skills — OWASP ASVS v5.0 checklist mapped to Drupal 11 APIs for security code reviews",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ludek Kvapil - siva01"
+      }
+    },
+    {
+      "name": "docker-tools",
+      "source": "./docker-tools",
+      "description": "Docker skills for Drupal development — Compose stack authoring/operations and Docker Model Runner for local AI models",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ludek Kvapil - siva01"
+      }
+    },
+    {
+      "name": "cicd-tools",
+      "source": "./cicd-tools",
+      "description": "CI/CD pipeline skills for Drupal projects — GitLab CI and GitHub Actions authoring, testing, and drush-based deployment",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ludek Kvapil - siva01"
       }
     }
   ]
