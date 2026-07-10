@@ -16,6 +16,7 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 | [security-tools](security-tools/) | 1.0.0 | Skill: OWASP ASVS v5.0 checklist mapped to Drupal 11 APIs |
 | [docker-tools](docker-tools/) | 1.0.0 | Skills: Docker Compose for Drupal stacks, Docker Model Runner for local AI models |
 | [cicd-tools](cicd-tools/) | 1.0.0 | Skills: GitLab CI and GitHub Actions pipelines for Drupal projects |
+| [workflow-tools](workflow-tools/) | 1.0.0 | Skills: phased feature/deploy workflows and a tiny-fix path, rigor scaled to risk |
 
 ### drupal-dev-tools
 
@@ -49,6 +50,14 @@ DDEV is a multiplatform local development environment (built on Docker), so it h
 - **`gitlab-ci`** — `.gitlab-ci.yml` authoring for Drupal: composer caching, phpcs/phpstan/phpunit jobs with a MariaDB service, `rules:`, environments, and drush-based deployment.
 - **`github-actions`** — workflows for Drupal: least-privilege permissions, concurrency, matrix PHP builds, database services, reusable workflows, and SSH/drush deployment.
 
+### workflow-tools
+
+Phased development workflows that orchestrate the other plugins' skills, with rigor scaled to the risk of the task:
+
+- **`feature-workflow`** — gated plan → implement → review → test → finalize procedure for non-trivial Drupal changes. Classifies the task first (standard / security-sensitive / schema-touching) and adds a mandatory security pass or update-hook requirement accordingly. Uses `drupal-module-development`, the `/drupal-dev-tools:drupal` audit, and `owasp-asvs` when those plugins are installed, with documented manual fallbacks when they are not.
+- **`deploy-workflow`** — safe deployment sequence: pre-flight config-status check, mandatory backup, `composer install` → `drush updb` → `drush cim` → `drush cr` (or `drush deploy`), post-deploy verification, and a rollback plan. Covers per-site update passes for multisite releases.
+- **`tiny-fix`** — deliberately minimal path for typos, CSS tweaks, and single-line changes, with an escalation tripwire to `feature-workflow` the moment a change touches logic, config, security, or schema.
+
 ## Installation
 
 ### Step 1: Add the Marketplace
@@ -78,6 +87,7 @@ Install any plugin with `/plugin install <plugin-name>@<marketplace-name>`:
 /plugin install security-tools@dev-tools
 /plugin install docker-tools@dev-tools
 /plugin install cicd-tools@dev-tools
+/plugin install workflow-tools@dev-tools
 ```
 
 ### Step 4: Verify Installation
@@ -201,11 +211,17 @@ claude-plugins/
 │   └── skills/
 │       ├── docker-compose/SKILL.md
 │       └── docker-model/SKILL.md
-└── cicd-tools/
+├── cicd-tools/
+│   ├── .claude-plugin/plugin.json
+│   └── skills/
+│       ├── gitlab-ci/SKILL.md
+│       └── github-actions/SKILL.md
+└── workflow-tools/
     ├── .claude-plugin/plugin.json
     └── skills/
-        ├── gitlab-ci/SKILL.md
-        └── github-actions/SKILL.md
+        ├── feature-workflow/SKILL.md
+        ├── deploy-workflow/SKILL.md
+        └── tiny-fix/SKILL.md
 ```
 
 ## Contributing
@@ -249,7 +265,11 @@ If you encounter any issues or have questions:
 
 ## Changelog
 
-### 2.0 (Latest)
+### 2.1 (Latest)
+
+- **New `workflow-tools` plugin:** phased `feature-workflow` (plan/implement/review/test/finalize with task classification), `deploy-workflow` (backup-first deployment sequence with multisite support and rollback), and `tiny-fix` (low-ceremony path with escalation tripwire). Workflows reference skills from the other plugins when installed and degrade gracefully when they are not.
+
+### 2.0
 - **Restructured into topic-based plugins:** `git-worktree` moved to new `git-tools` plugin, `owasp-asvs` moved to new `security-tools` plugin, `drupal-ddev` agent + `drupal-ddev-operations` skill moved to new `ddev-tools` plugin (DDEV is multiplatform, not Drupal-specific)
 - **New `docker-tools` plugin:** Docker Compose (Drupal stack) and Docker Model Runner skills
 - **New `cicd-tools` plugin:** GitLab CI and GitHub Actions skills for Drupal pipelines
