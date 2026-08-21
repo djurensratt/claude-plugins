@@ -1,0 +1,57 @@
+name: Sync upstream
+
+# Opens a PR when the upstream repo moves. Deliberately does NOT merge on its
+# own: this fork exists so third-party changes get read before they reach a
+# Claude Code session in our repos.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge upstream and open a PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPSTREAM: siva01c/claude-plugins
+          BRANCH: sync-upstream
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git remote add upstream "https://github.com/$UPSTREAM.git"
+          git fetch --quiet upstream
+          UB="$(gh api "repos/$UPSTREAM" --jq .default_branch)"
+
+          if git merge-base --is-ancestor "upstream/$UB" HEAD; then
+            echo "Already up to date with $UPSTREAM@$UB."
+            exit 0
+          fi
+
+          git checkout -B "$BRANCH"
+          if ! git merge --no-edit "upstream/$UB"; then
+            git merge --abort || true
+            echo "::error::Merge conflict with $UPSTREAM@$UB — resolve by hand."
+            exit 1
+          fi
+
+          git push --force-with-lease origin "$BRANCH"
+
+          COUNT="$(git rev-list --count "origin/${GITHUB_REF_NAME}..$BRANCH" 2>/dev/null || echo '?')"
+          BODY="$(printf '%s new commit(s) from https://github.com/%s\n\nRead the diff before merging: this fork is the review gate that keeps upstream changes from reaching Claude Code sessions in our repos unreviewed.' "$COUNT" "$UPSTREAM")"
+
+          if ! gh pr create --head "$BRANCH" --title "Sync upstream ($UPSTREAM)" --body "$BODY" 2>/dev/null; then
+            echo "PR already open, or Actions lacks PR-create permission; branch $BRANCH is pushed either way."
+          fi
