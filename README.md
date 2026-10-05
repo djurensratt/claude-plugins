@@ -17,6 +17,7 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 | [docker-tools](docker-tools/) | 1.0.0 | Skills: Docker Compose for Drupal stacks, Docker Model Runner for local AI models |
 | [cicd-tools](cicd-tools/) | 1.0.0 | Skills: GitLab CI and GitHub Actions pipelines for Drupal projects |
 | [workflow-tools](workflow-tools/) | 1.0.0 | Skills: phased feature/deploy workflows and a tiny-fix path, rigor scaled to risk |
+| [quality-tools](quality-tools/) | 1.0.0 | Skills: SOLID and DRY design review rules |
 
 ### drupal-dev-tools
 
@@ -58,6 +59,13 @@ Phased development workflows that orchestrate the other plugins' skills, with ri
 - **`deploy-workflow`** — safe deployment sequence: pre-flight config-status check, mandatory backup, `composer install` → `drush updb` → `drush cim` → `drush cr` (or `drush deploy`), post-deploy verification, and a rollback plan. Covers per-site update passes for multisite releases.
 - **`tiny-fix`** — deliberately minimal path for typos, CSS tweaks, and single-line changes, with an escalation tripwire to `feature-workflow` the moment a change touches logic, config, security, or schema.
 
+### quality-tools
+
+Design review rules that pair with `security-tools:owasp-asvs` in a code review:
+
+- **`solid`** — SRP, OCP, LSP, ISP and DIP as review rules: what counts as a finding (a real cost today or on the next change), what is only taste, severity scale and what each finding must cite.
+- **`dry`** — duplicated *knowledge* (rules, constants, parsers, protocol details) rather than similar-looking text: what to look for, what is not a finding, severity by whether the copies have already drifted.
+
 ## Installation
 
 ### Step 1: Add the Marketplace
@@ -88,6 +96,7 @@ Install any plugin with `/plugin install <plugin-name>@<marketplace-name>`:
 /plugin install docker-tools@dev-tools
 /plugin install cicd-tools@dev-tools
 /plugin install workflow-tools@dev-tools
+/plugin install quality-tools@dev-tools
 ```
 
 ### Step 4: Verify Installation
@@ -216,12 +225,17 @@ claude-plugins/
 │   └── skills/
 │       ├── gitlab-ci/SKILL.md
 │       └── github-actions/SKILL.md
-└── workflow-tools/
+├── workflow-tools/
+│   ├── .claude-plugin/plugin.json
+│   └── skills/
+│       ├── feature-workflow/SKILL.md
+│       ├── deploy-workflow/SKILL.md
+│       └── tiny-fix/SKILL.md
+└── quality-tools/
     ├── .claude-plugin/plugin.json
     └── skills/
-        ├── feature-workflow/SKILL.md
-        ├── deploy-workflow/SKILL.md
-        └── tiny-fix/SKILL.md
+        ├── solid/SKILL.md
+        └── dry/SKILL.md
 ```
 
 ## Contributing
@@ -265,7 +279,11 @@ If you encounter any issues or have questions:
 
 ## Changelog
 
-### 2.1 (Latest)
+### 2.2 (Latest)
+
+- **New `quality-tools` plugin:** `solid` and `dry` design review skills — the design half of a code review next to `security-tools:owasp-asvs`.
+
+### 2.1
 
 - **New `workflow-tools` plugin:** phased `feature-workflow` (plan/implement/review/test/finalize with task classification), `deploy-workflow` (backup-first deployment sequence with multisite support and rollback), and `tiny-fix` (low-ceremony path with escalation tripwire). Workflows reference skills from the other plugins when installed and degrade gracefully when they are not.
 
